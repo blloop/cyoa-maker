@@ -12,17 +12,16 @@ const box = new Sprite({
   source: './img/textbox.png'
 })
 
-let choice1 = [550, 330, 340, 60, false];
-let choice2 = [550, 410, 340, 60, false];
-function drawBox(box) {
-  c.fillStyle = box[4] ? 'yellow' : 'blue'
-  c.fillRect(box[0], box[1], box[2], box[3])
-}
+let choice1 = ['Go Left', 590, 370, 340, false];
+let choice2 = ['Go Right', 590, 440, 340, false];
+let box1 = [550, 330, 340, 60];
+let box2 = [550, 410, 340, 60];
 
 function loop() {
   box.update();
-  drawBox(choice1);
-  drawBox(choice2);
+  drawChoice(choice1);
+  drawChoice(choice2);
+  drawScene(0);
   window.requestAnimationFrame(loop);
 }
 loop();
@@ -32,15 +31,18 @@ function cursorOn(x, y, box) {
     x < box[0] + box[2] && y < box[1] + box[3]
   );
 }
+
 window.onmousemove = function(e) {
   let rect = canvas.getBoundingClientRect();
   let mX = e.pageX - rect.left;
   let mY = e.pageY - rect.top;
-  if (cursorOn(mX, mY, choice1)) {
+  if (cursorOn(mX, mY, box1)) {
     canvas.style.cursor = 'pointer';
     choice1[4] = true;
-  } else if (cursorOn(mX, mY, choice2)) {
+    choice2[4] = false;
+  } else if (cursorOn(mX, mY, box2)) {
     canvas.style.cursor = 'pointer';
+    choice1[4] = false;
     choice2[4] = true;
   } else {
     canvas.style.cursor = 'default';
@@ -53,9 +55,9 @@ window.onmouseup = function(e) {
   let rect = canvas.getBoundingClientRect();
   let mX = e.pageX - rect.left;
   let mY = e.pageY - rect.top;
-  if (cursorOn(mX, mY, choice1)) {
+  if (cursorOn(mX, mY, box1)) {
     return;
-  } else if (cursorOn(mX, mY, choice2)) {
+  } else if (cursorOn(mX, mY, box2)) {
     return;
   }
 }
