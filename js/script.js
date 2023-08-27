@@ -8,40 +8,41 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 
 // Game constants
 const NUMCHOICE = 3; // number of user choices
-const INDWIDTH = 20; // indicator width, in px
+const INDWIDTH = 30; // indicator width, in px
+const CFSIZE = 24; // font size of choice box, in px
 const CBOXW = 400; // width of choice box, in px
 const CBOXH = 200; // height of choice box, in px
-const CBOXPAD = 40; // padding of choice box, in px
+const CBOXPAD = 20; // padding of choice box, in px
 const PAGEPAD = 40; // dialog page padding, in px
 const TSDELAY = 400; // transition delay, in ms
 
 // Interface elements
-const box = new Sprite({
-  position: { x: 520, y: 300 },
-  size: { width: CBOXW, height: CBOXH },
-  source: './img/textbox.png'
-})
-
 let choices = [];
+let boxes = [];
+const CHEIGHT = (CBOXH - (2 * CBOXPAD)) / NUMCHOICE;
 for (let i = 0; i < NUMCHOICE; i++) {
   choices.push([
     'Blank Choice', 
     canvas.width - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
-    360 + (i * 50), 
+    canvas.height - PAGEPAD - CBOXPAD - 
+      (CHEIGHT * (NUMCHOICE - i - 1)) - 
+      (CHEIGHT - CFSIZE) / 2,
     false
+  ]);
+  boxes.push([
+    canvas.width - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
+    canvas.height - PAGEPAD - CBOXPAD - 
+      (CHEIGHT * (NUMCHOICE - i)),
+    CBOXW - (2 * CBOXPAD),
+    CHEIGHT
   ]);
 }
 
-let box1 = [550, 330, 340, 40];
-let box2 = [550, 380, 340, 40];
-let box3 = [550, 430, 340, 40];
-
-console.log(choices);
 // Event loop
 function loop() {
-  box.update();
-  choices.forEach(ch => drawChoice(ch));
   drawScene(0);
+  drawCBox();
+  choices.forEach(ch => drawChoice(ch));
   window.requestAnimationFrame(loop);
 }
 loop();
@@ -56,23 +57,22 @@ window.onmousemove = function(e) {
   let rect = canvas.getBoundingClientRect();
   let mX = e.pageX - rect.left;
   let mY = e.pageY - rect.top;
-  choices[0][3] = cursorOn(mX, mY, box1);
-  choices[1][3] = (!choices[0][3] && 
-    cursorOn(mX, mY, box2));
-  choices[2][3] = (!choices[0][3] && 
-    !choices[1][3] && cursorOn(mX, mY, box3));
-  canvas.style.cursor = 
-    (choices[0][3] || choices[1][3] || choices[2][3]) ?
-    'pointer' : 'default';
+  let chosen = false;
+  for (let i = 0; i < NUMCHOICE; i++) {
+    choices[i][3] = !chosen && cursorOn(mX, mY, boxes[i]);
+    chosen = choices[i][3] ? true : chosen;
+  }
+  canvas.style.cursor = chosen ? 'pointer' : 'default';
+  // canvas.style.cursor = boxes.some(b => {
+  //   return cursorOn(mX, mY, b)
+  // }) ? 'pointer' : 'default';
 }
 
 window.onmouseup = function(e) {
   let rect = canvas.getBoundingClientRect();
   let mX = e.pageX - rect.left;
   let mY = e.pageY - rect.top;
-  if (cursorOn(mX, mY, box1)) {
-    return;
-  } else if (cursorOn(mX, mY, box2)) {
-    return;
-  }
+  // if (cursorOn(mX, mY, ...)) {
+  //   return;
+  // }
 }
