@@ -7,7 +7,7 @@ c.imageSmoothingEnabled = false;
 c.fillRect(0, 0, canvas.width, canvas.height);
 
 // Game constants
-const NUMCHOICE = 3; // number of user choices
+const NUMCHOICE = 4; // number of user choices
 const INDWIDTH = 30; // indicator width, in px
 const CFSIZE = 24; // font size of choice box, in px
 const CBOXW = 400; // width of choice box, in px
@@ -15,6 +15,7 @@ const CBOXH = 200; // height of choice box, in px
 const CBOXPAD = 20; // padding of choice box, in px
 const PAGEPAD = 40; // dialog page padding, in px
 const TSDELAY = 400; // transition delay, in ms
+const FADETIME = 300; // time to fade in / out, in ms
 
 // Interface elements
 let choices = [];
@@ -22,7 +23,7 @@ let boxes = [];
 const CHEIGHT = (CBOXH - (2 * CBOXPAD)) / NUMCHOICE;
 for (let i = 0; i < NUMCHOICE; i++) {
   choices.push([
-    'Blank Choice', 
+    `Blank Choice ${i + 1}`, 
     canvas.width - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
     canvas.height - PAGEPAD - CBOXPAD - 
       (CHEIGHT * (NUMCHOICE - i - 1)) - 
@@ -38,12 +39,33 @@ for (let i = 0; i < NUMCHOICE; i++) {
   ]);
 }
 
+// Choice selection and screen fading
+let canSelect = true;
+let fade = 0;
+let currScene = 0;
+function fadeIn(x, t) {
+  if (x < 100) {
+    fade = x + 1;
+    setTimeout(() => fadeIn(x + 1, t), t / 100);
+  } else {
+    fadeOut(100, t);
+    currScene += 1;
+  }
+}
+
+function fadeOut(x, t) {
+  if (x < 0) return;
+  fade = x - 1;
+  setTimeout(() => fadeOut(x - 1, t), t / 100);
+}
+
 // Event loop
 function loop() {
-  drawScene(0);
+  drawScene(currScene);
   drawCBox();
   choices.forEach(ch => drawChoice(ch));
   window.requestAnimationFrame(loop);
+  drawFade(fade);
 }
 loop();
 
@@ -59,20 +81,21 @@ window.onmousemove = function(e) {
   let mY = e.pageY - rect.top;
   let chosen = false;
   for (let i = 0; i < NUMCHOICE; i++) {
-    choices[i][3] = !chosen && cursorOn(mX, mY, boxes[i]);
+    choices[i][3] = canSelect && 
+      !chosen && cursorOn(mX, mY, boxes[i]);
     chosen = choices[i][3] ? true : chosen;
   }
   canvas.style.cursor = chosen ? 'pointer' : 'default';
-  // canvas.style.cursor = boxes.some(b => {
-  //   return cursorOn(mX, mY, b)
-  // }) ? 'pointer' : 'default';
 }
 
 window.onmouseup = function(e) {
-  let rect = canvas.getBoundingClientRect();
-  let mX = e.pageX - rect.left;
-  let mY = e.pageY - rect.top;
-  // if (cursorOn(mX, mY, ...)) {
-  //   return;
-  // }
+  for (let i = 0; i < NUMCHOICE; i++) {
+    if (choices[i][3]) {
+      choices[i][3] = false;
+      fadeIn(0, FADETIME);
+      canSelect = false;
+      setTimeout(() => canSelect = true, FADETIME * 2);
+      break;
+    }
+  }
 }
