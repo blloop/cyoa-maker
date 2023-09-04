@@ -11,6 +11,10 @@ class Sprite {
     this.image.src = source;
   }
 
+  src(path) {
+    this.image.src = path;
+  }
+
   draw() {
     c.drawImage(this.image, 
       this.position.x, this.position.y,

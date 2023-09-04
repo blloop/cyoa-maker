@@ -8,12 +8,6 @@ function drawChoice(ch) {
   c.fillText(ch[0], ch[1], ch[2], CBOXW - (2 * CBOXPAD));
 }
 
-function drawScene(num) {
-  c.fillStyle = CFCOLOR;
-  c.font = `${CFSIZE}px ${CFONT}`;
-  c.fillText(num.toString(), 30, 40);
-}
-
 function drawCBox() {
   c.fillStyle = 'gray';
   c.fillRect(

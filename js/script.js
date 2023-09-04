@@ -28,20 +28,23 @@ for (let i = 0; i < NUMCHOICE; i++) {
   ]);
 }
 
-// Choice selection and screen fading
+// Scene and choice structure
 let canSelect = true;
-let fade = 0;
-let currScene = 0;
-function fadeIn(x, t) {
-  if (x < 100) {
-    fade = x + 4;
-    setTimeout(() => fadeIn(x + 4, t), t / 25);
-  } else {
-    fadeOut(100, t);
-    currScene += 1;
-  }
-}
+let isSelect = true;
+let sceneNum = 0;
+let sceneImg = new Sprite({
+  position: { x: 0, y: 0 }, 
+  size: { width: CANWIDTH, height: CANHEIGHT },
+  source: SCENES[0][0]
+});
 
+// Screen fade
+let fade = 0;
+function fadeIn(x, t) {
+  if (x > 100) return;
+  fade = x + 4;
+  setTimeout(() => fadeIn(x + 4, t), t / 25);
+}
 function fadeOut(x, t) {
   if (x < 0) return;
   fade = x - 4;
@@ -50,7 +53,7 @@ function fadeOut(x, t) {
 
 // Event loop
 function loop() {
-  drawScene(currScene);
+  sceneImg.update();
   if (canSelect) {
     drawCBox();
     choices.forEach(ch => drawChoice(ch));    
@@ -83,9 +86,16 @@ window.onmouseup = function(e) {
   for (let i = 0; i < NUMCHOICE; i++) {
     if (choices[i][3]) {
       choices[i][3] = false;
-      fadeIn(0, FADETIME);
       canSelect = false;
-      setTimeout(() => canSelect = true, FADETIME * 2);
+      fadeIn(0, FADETIME);
+      setTimeout(() => {
+        sceneNum = SCENES[sceneNum][3][i];
+        sceneImg.src(SCENES[sceneNum][0]);
+        fadeOut(100, FADETIME);
+      }, FADETIME);
+      setTimeout(() => {
+        canSelect = true;
+      })
       break;
     }
   }
