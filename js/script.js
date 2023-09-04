@@ -1,21 +1,10 @@
 // Canvas preparation
 const canvas = document.getElementById('canvas');
-canvas.width = 960;
-canvas.height = 540;
+canvas.width = CANWIDTH;
+canvas.height = CANHEIGHT;
 const c = canvas.getContext('2d');
 c.imageSmoothingEnabled = false;
-c.fillRect(0, 0, canvas.width, canvas.height);
-
-// Game constants
-const NUMCHOICE = 4; // number of user choices
-const INDWIDTH = 30; // indicator width, in px
-const CFSIZE = 24; // font size of choice box, in px
-const CBOXW = 400; // width of choice box, in px
-const CBOXH = 200; // height of choice box, in px
-const CBOXPAD = 20; // padding of choice box, in px
-const PAGEPAD = 40; // dialog page padding, in px
-const TSDELAY = 400; // transition delay, in ms
-const FADETIME = 300; // time to fade in / out, in ms
+c.fillRect(0, 0, CANWIDTH, CANHEIGHT);
 
 // Interface elements
 let choices = [];
@@ -24,15 +13,15 @@ const CHEIGHT = (CBOXH - (2 * CBOXPAD)) / NUMCHOICE;
 for (let i = 0; i < NUMCHOICE; i++) {
   choices.push([
     `Blank Choice ${i + 1}`, 
-    canvas.width - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
-    canvas.height - PAGEPAD - CBOXPAD - 
+    CANWIDTH - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
+    CANHEIGHT - PAGEPAD - CBOXPAD - 
       (CHEIGHT * (NUMCHOICE - i - 1)) - 
       (CHEIGHT - CFSIZE) / 2,
     false
   ]);
   boxes.push([
-    canvas.width - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
-    canvas.height - PAGEPAD - CBOXPAD - 
+    CANWIDTH - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
+    CANHEIGHT - PAGEPAD - CBOXPAD - 
       (CHEIGHT * (NUMCHOICE - i)),
     CBOXW - (2 * CBOXPAD),
     CHEIGHT
@@ -45,8 +34,8 @@ let fade = 0;
 let currScene = 0;
 function fadeIn(x, t) {
   if (x < 100) {
-    fade = x + 1;
-    setTimeout(() => fadeIn(x + 1, t), t / 100);
+    fade = x + 4;
+    setTimeout(() => fadeIn(x + 4, t), t / 25);
   } else {
     fadeOut(100, t);
     currScene += 1;
@@ -55,17 +44,19 @@ function fadeIn(x, t) {
 
 function fadeOut(x, t) {
   if (x < 0) return;
-  fade = x - 1;
-  setTimeout(() => fadeOut(x - 1, t), t / 100);
+  fade = x - 4;
+  setTimeout(() => fadeOut(x - 4, t), t / 25);
 }
 
 // Event loop
 function loop() {
   drawScene(currScene);
-  drawCBox();
-  choices.forEach(ch => drawChoice(ch));
-  window.requestAnimationFrame(loop);
+  if (canSelect) {
+    drawCBox();
+    choices.forEach(ch => drawChoice(ch));    
+  }
   drawFade(fade);
+  window.requestAnimationFrame(loop);
 }
 loop();
 
@@ -81,7 +72,7 @@ window.onmousemove = function(e) {
   let mY = e.pageY - rect.top;
   let chosen = false;
   for (let i = 0; i < NUMCHOICE; i++) {
-    choices[i][3] = canSelect && 
+    choices[i][3] = canSelect &&
       !chosen && cursorOn(mX, mY, boxes[i]);
     chosen = choices[i][3] ? true : chosen;
   }
