@@ -54,7 +54,7 @@ function fadeOut(x, t) {
 // Event loop
 function loop() {
   sceneImg.update();
-  if (canSelect) {
+  if (SCENES[sceneNum][1]) {
     drawCBox();
     choices.forEach(ch => drawChoice(ch));    
   }
@@ -74,6 +74,10 @@ window.onmousemove = function(e) {
   let mX = e.pageX - rect.left;
   let mY = e.pageY - rect.top;
   let chosen = false;
+  if (!SCENES[sceneNum][1]) {
+    canvas.style.cursor = canSelect ? 'pointer' : 'default';
+    return;
+  }
   for (let i = 0; i < NUMCHOICE; i++) {
     choices[i][3] = canSelect &&
       !chosen && cursorOn(mX, mY, boxes[i]);
@@ -83,6 +87,13 @@ window.onmousemove = function(e) {
 }
 
 window.onmouseup = function(e) {
+  if (!SCENES[sceneNum][1]) {
+    if (canSelect) {
+      sceneNum = SCENES[sceneNum][2];
+      sceneImg.src(SCENES[sceneNum][0]);
+    }
+    return;
+  }
   for (let i = 0; i < NUMCHOICE; i++) {
     if (choices[i][3]) {
       choices[i][3] = false;
@@ -95,7 +106,7 @@ window.onmouseup = function(e) {
       }, FADETIME);
       setTimeout(() => {
         canSelect = true;
-      })
+      }, FADETIME);
       break;
     }
   }
