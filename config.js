@@ -14,3 +14,7 @@ const CFCOLOR = 'white';
 const CBOXW = 400; // width of choice box, in px
 const CBOXH = 200; // height of choice box, in px
 const CBOXPAD = 20; // padding of choice box, in px
+
+// Custom interface sprites
+const CBOXIMG = 'img/textbox.png'; // choice box sprite
+const CARRIMG = 'img/arrow.png'; // continue arrow sprite

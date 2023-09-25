@@ -6,7 +6,17 @@ const c = canvas.getContext('2d');
 c.imageSmoothingEnabled = false;
 c.fillRect(0, 0, CANWIDTH, CANHEIGHT);
 
-// Interface elements
+// Interface choice box
+let cbox = new Sprite({
+  position: {
+    x: CANWIDTH - PAGEPAD - CBOXW, 
+    y: CANHEIGHT - PAGEPAD - CBOXH
+  }, 
+  size: { width: CBOXW, height: CBOXH },
+  source: CBOXIMG
+});
+
+// Interface choices
 let choices = [];
 let boxes = [];
 const CHEIGHT = (CBOXH - (2 * CBOXPAD)) / NUMCHOICE;
@@ -27,6 +37,15 @@ for (let i = 0; i < NUMCHOICE; i++) {
     CHEIGHT
   ]);
 }
+
+let carrow = new Sprite({
+  position: {
+    x: CANWIDTH - CBOXW + CBOXPAD,
+    y: 0
+  }, 
+  size: { width: INDWIDTH, height: CHEIGHT },
+  source: CARRIMG
+});
 
 // Scene and choice structure
 let canSelect = true;
@@ -55,8 +74,8 @@ function fadeOut(x, t) {
 function loop() {
   sceneImg.update();
   if (SCENES[sceneNum][1]) {
-    drawCBox();
-    choices.forEach(ch => drawChoice(ch));    
+    cbox.update();
+    choices.forEach(ch => drawChoice(ch));
   }
   drawFade(fade);
   window.requestAnimationFrame(loop);
