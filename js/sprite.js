@@ -11,6 +11,12 @@ class Sprite {
     this.image.src = source;
   }
 
+  setY(y) {
+    this.position = {
+      x: this.position.x, y: y
+    };
+  }
+
   src(path) {
     this.image.src = path;
   }

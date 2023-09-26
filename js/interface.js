@@ -3,7 +3,9 @@ function drawChoice(ch) {
   c.font = `${CFSIZE}px ${CFONT}`;
   if (ch[3]) {
     c.fillStyle = 'pink';
-    c.fillText('>', ch[1] - INDWIDTH, ch[2], INDWIDTH)
+    carrow.setY(ch[2] - CFSIZE);
+    carrow.update();
+    // c.fillRect(carrow.position.x, carrow.position.y, carrow.width, carrow.height);
   }
   c.fillText(ch[0], ch[1], ch[2], CBOXW - (2 * CBOXPAD));
 }

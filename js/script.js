@@ -40,10 +40,10 @@ for (let i = 0; i < NUMCHOICE; i++) {
 
 let carrow = new Sprite({
   position: {
-    x: CANWIDTH - CBOXW + CBOXPAD,
+    x: CANWIDTH - PAGEPAD - CBOXW + CBOXPAD,
     y: 0
   }, 
-  size: { width: INDWIDTH, height: CHEIGHT },
+  size: { width: INDWIDTH - 10, height: CFSIZE },
   source: CARRIMG
 });
 
