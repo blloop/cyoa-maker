@@ -6,46 +6,16 @@ const c = canvas.getContext('2d');
 c.imageSmoothingEnabled = false;
 c.fillRect(0, 0, CANWIDTH, CANHEIGHT);
 
-// Interface choice box
-let cbox = new Sprite({
-  position: {
-    x: CANWIDTH - PAGEPAD - CBOXW, 
-    y: CANHEIGHT - PAGEPAD - CBOXH
-  }, 
-  size: { width: CBOXW, height: CBOXH },
-  source: CBOXIMG
-});
+// Import: fade.js
+// - Variables: fade
+// - Functions: fadeIn, fadeOut, drawFade
 
-// Interface choices
-let choices = [];
-let boxes = [];
-const CHEIGHT = (CBOXH - (2 * CBOXPAD)) / NUMCHOICE;
-for (let i = 0; i < NUMCHOICE; i++) {
-  choices.push([
-    `Blank Choice ${i + 1}`, 
-    CANWIDTH - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
-    CANHEIGHT - PAGEPAD - CBOXPAD - 
-      (CHEIGHT * (NUMCHOICE - i - 1)) - 
-      (CHEIGHT - CFSIZE) / 2,
-    false
-  ]);
-  boxes.push([
-    CANWIDTH - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
-    CANHEIGHT - PAGEPAD - CBOXPAD - 
-      (CHEIGHT * (NUMCHOICE - i)),
-    CBOXW - (2 * CBOXPAD),
-    CHEIGHT
-  ]);
-}
+// Import: sprite.js
+// - Classes: Sprite
 
-let carrow = new Sprite({
-  position: {
-    x: CANWIDTH - PAGEPAD - CBOXW + CBOXPAD,
-    y: 0
-  }, 
-  size: { width: INDWIDTH - 10, height: CFSIZE },
-  source: CARRIMG
-});
+// Import: interface.js
+// - Variables: cbox, carrow, choices, boxes
+// - Functions: drawChoice
 
 // Scene and choice structure
 let canSelect = true;
@@ -56,19 +26,6 @@ let sceneImg = new Sprite({
   size: { width: CANWIDTH, height: CANHEIGHT },
   source: SCENES[0][0]
 });
-
-// Screen fade
-let fade = 0;
-function fadeIn(x, t) {
-  if (x > 100) return;
-  fade = x + 4;
-  setTimeout(() => fadeIn(x + 4, t), t / 25);
-}
-function fadeOut(x, t) {
-  if (x < 0) return;
-  fade = x - 4;
-  setTimeout(() => fadeOut(x - 4, t), t / 25);
-}
 
 // Event loop
 function loop() {

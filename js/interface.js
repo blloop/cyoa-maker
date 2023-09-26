@@ -1,3 +1,4 @@
+// Choice box elements
 function drawChoice(ch) {
   c.fillStyle = CFCOLOR;
   c.font = `${CFSIZE}px ${CFONT}`;
@@ -10,16 +11,42 @@ function drawChoice(ch) {
   c.fillText(ch[0], ch[1], ch[2], CBOXW - (2 * CBOXPAD));
 }
 
-function drawCBox() {
-  c.fillStyle = 'gray';
-  c.fillRect(
-    CANWIDTH - PAGEPAD - CBOXW, 
-    CANHEIGHT - PAGEPAD - CBOXH, 
-    CBOXW, CBOXH
-  );
-}
+// Interface choice box and arrow
+let carrow = new Sprite({
+  position: {
+    x: CANWIDTH - PAGEPAD - CBOXW + CBOXPAD,
+    y: 0
+  }, 
+  size: { width: INDWIDTH - 10, height: CFSIZE },
+  source: CARRIMG
+});
+let cbox = new Sprite({
+  position: {
+    x: CANWIDTH - PAGEPAD - CBOXW, 
+    y: CANHEIGHT - PAGEPAD - CBOXH
+  }, 
+  size: { width: CBOXW, height: CBOXH },
+  source: CBOXIMG
+});
 
-function drawFade(x) {
-  c.fillStyle = `rgba(0, 0, 0, ${x/100}`;
-  c.fillRect(0, 0, CANWIDTH, CANHEIGHT);
+// Interface choices and hover boxes
+let choices = [];
+let boxes = [];
+const CHEIGHT = (CBOXH - (2 * CBOXPAD)) / NUMCHOICE;
+for (let i = 0; i < NUMCHOICE; i++) {
+  choices.push([
+    `Blank Choice ${i + 1}`, 
+    CANWIDTH - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
+    CANHEIGHT - PAGEPAD - CBOXPAD - 
+      (CHEIGHT * (NUMCHOICE - i - 1)) - 
+      (CHEIGHT - CFSIZE) / 2,
+    false
+  ]);
+  boxes.push([
+    CANWIDTH - PAGEPAD - CBOXW + CBOXPAD + INDWIDTH, 
+    CANHEIGHT - PAGEPAD - CBOXPAD - 
+      (CHEIGHT * (NUMCHOICE - i)),
+    CBOXW - (2 * CBOXPAD),
+    CHEIGHT
+  ]);
 }
