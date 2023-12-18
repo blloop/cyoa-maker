@@ -26,11 +26,16 @@ let sceneImg = new Sprite({
   size: { width: CANWIDTH, height: CANHEIGHT },
   source: SCENES[0][0]
 });
+function loadChoices() {
+  for (let i = 0; i < NUMCHOICE; i++) {
+    choices[i][0] = SCENES[sceneNum][1][i];
+  }
+}
 
 // Event loop
 function loop() {
   sceneImg.update();
-  if (SCENES[sceneNum][1]) {
+  if (typeof(SCENES[sceneNum][1]) !== 'string') {
     cbox.update();
     choices.forEach(ch => drawChoice(ch));
   }
@@ -50,7 +55,7 @@ window.onmousemove = function(e) {
   let mX = e.pageX - rect.left;
   let mY = e.pageY - rect.top;
   let chosen = false;
-  if (!SCENES[sceneNum][1]) {
+  if (typeof(SCENES[sceneNum][1]) === 'string') {
     canvas.style.cursor = canSelect ? 'pointer' : 'default';
     return;
   }
@@ -63,10 +68,12 @@ window.onmousemove = function(e) {
 }
 
 window.onmouseup = function(e) {
-  if (!SCENES[sceneNum][1]) {
+  if (typeof(SCENES[sceneNum][1]) === 'string') {
     if (canSelect) {
       sceneNum = SCENES[sceneNum][2];
       sceneImg.src(SCENES[sceneNum][0]);
+      loadChoices();
+      // TODO: Start text transition
     }
     return;
   }
@@ -76,7 +83,7 @@ window.onmouseup = function(e) {
       canSelect = false;
       fadeIn(0, FADETIME);
       setTimeout(() => {
-        sceneNum = SCENES[sceneNum][3][i];
+        sceneNum = SCENES[sceneNum][2][i];
         sceneImg.src(SCENES[sceneNum][0]);
         fadeOut(100, FADETIME);
       }, FADETIME);

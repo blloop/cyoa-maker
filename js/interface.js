@@ -6,7 +6,6 @@ function drawChoice(ch) {
     c.fillStyle = 'pink';
     carrow.setY(ch[2] - CFSIZE);
     carrow.update();
-    // c.fillRect(carrow.position.x, carrow.position.y, carrow.width, carrow.height);
   }
   c.fillText(ch[0], ch[1], ch[2], CBOXW - (2 * CBOXPAD));
 }
